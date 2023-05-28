@@ -6,8 +6,7 @@ def refine(arg):
     Mysql_types = ['datetime','float','intiger']
     panda_types = ['time','float','int']
     for i in range(3):
-        if str(panda_types[i] in str(arg)):
-            print(i,panda_types[i],arg,panda_types[i] in str(arg))
+        if (str(panda_types[i]) in str(arg)):
             return (Mysql_types[i])
 
 
@@ -44,7 +43,7 @@ cursor = mycon.cursor()                                                         
 
 #database checkup
 try:
-    cursor.execute('check database '+database_name)
+    cursor.execute('use '+database_name)
 except:
     cursor.execute('create database '+database_name)
 
