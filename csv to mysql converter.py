@@ -29,9 +29,8 @@ for i in columns:
     column = (df.loc[0,i])
     panda_type = [str(type(column))]
     mysql_type = refine(panda_type)
-    print(mysql_type)
     column_types+= [mysql_type]
-print(column_types)
+print(column_types,'are the datatypes of columns')
 
 #mysql_connector
 mycon = sqlator.connect(host='localhost', user='root', passwd='Plank#6.626', database='business')
@@ -47,7 +46,18 @@ try:
 except:
     cursor.execute('create database '+database_name)
 
-
+#creation of table
+description = ' '
+for i in range(len(columns)):
+    if i > 0:
+        description += ','
+    description += columns[i] + ' '
+    description += column_types[i] + ' '
+    if i == position:
+        description += ' primary key '
+table  = "create table " + table_name + '(' +description+ ')'
+cursor.execute(table)
+mycon.commit()
 
 
     
