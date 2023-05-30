@@ -59,5 +59,12 @@ table  = "create table " + table_name + '(' +description+ ')'
 cursor.execute(table)
 mycon.commit()
 
+#Entering data
+n = (len(df.index))
+for i in range(n):
+    entry_list = list(df.iloc[i,:])
+    entry_list[0] = str(entry_list[0])
+    entry_tuple = tuple(entry_list)
+    print(entry_tuple)
 
     
