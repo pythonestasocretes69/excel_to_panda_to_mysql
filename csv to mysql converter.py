@@ -61,10 +61,23 @@ mycon.commit()
 
 #Entering data
 n = (len(df.index))
+command = "insert into " + table_name + ' values('
+
+for i in column_types:
+    if i == 'datetime':
+        command = command + "'{}',"
+    else:
+        command = command + "{},"
+command = command[0:-1] + ')'
+print(command.format('2022-05-27 00:00:00', 54671.5, 54936.63, 54449.34, 54884.66)) 
+
 for i in range(n):
     entry_list = list(df.iloc[i,:])
-    entry_list[0] = str(entry_list[0])
+    for j in column_types:
+        if j == 'datetime':
+            pos = column_types.index(j)
+    entry_list[pos] = str(entry_list[pos])
     entry_tuple = tuple(entry_list)
-    print(entry_tuple)
+    cursor.execute(command.format(entry_tuple[0],entry_tuple[1],entry_tuple[2],entry_tuple[3],entry_tuple[4]))
 
     
