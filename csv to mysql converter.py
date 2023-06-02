@@ -80,4 +80,4 @@ for i in range(n):
     entry_tuple = tuple(entry_list)
     cursor.execute(command.format(entry_tuple[0],entry_tuple[1],entry_tuple[2],entry_tuple[3],entry_tuple[4]))
 
-    
+mycon.commit()
