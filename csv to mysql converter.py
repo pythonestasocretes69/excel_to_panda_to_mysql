@@ -78,6 +78,6 @@ for i in range(n):
             pos = column_types.index(j)
     entry_list[pos] = str(entry_list[pos])
     entry_tuple = tuple(entry_list)
-    cursor.execute(command.format(entry_tuple[0],entry_tuple[1],entry_tuple[2],entry_tuple[3],entry_tuple[4]))
+    cursor.execute(command.format(*entry_tuple))
 
 mycon.commit()
