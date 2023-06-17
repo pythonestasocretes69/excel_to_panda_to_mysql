@@ -3,9 +3,10 @@ import pandas as pd
 import mysql.connector as sqlator
 
 def refine(arg):
-    Mysql_types = ['datetime','float','intiger']
-    panda_types = ['time','float','int']
-    for i in range(3):
+    Mysql_types = ['datetime','float','integer','char(20)']
+    panda_types = ['time','float','int','str']
+    for i in range(len(Mysql_types)):
+        print ( 'Type:', arg)
         if (str(panda_types[i]) in str(arg)):
             return (Mysql_types[i])
 
@@ -18,13 +19,15 @@ df = pd.read_excel(file_name)
 table_name = input("Enter the table's name you want to create: ")
 database_name = input ("Enter database name: ")
 
-columns = list(df.columns)                                                           # extraction of primary key & columns
+# extraction of primary key & columns
+columns = list(df.columns)
 print(columns)
 position= int(input('Enter the positon of the column to be taken as a primary key:'))
 print(columns[position],'is the primary key')
 primary_key = columns[position]
 
-column_types = []                                      #extraction of datatypes of columns
+#extraction of datatypes of columns
+column_types = []
 for i in columns:
     column = (df.loc[0,i])
     panda_type = [str(type(column))]
@@ -35,10 +38,10 @@ print(column_types,'are the datatypes of columns')
 #mysql_connector
 mycon = sqlator.connect(host='localhost', user='root', passwd='Plank#6.626', database='business')
 if mycon.is_connected():
-    print('connected')                                                                         # basic connection   object = mycon
+    print('connected')                   # basic connection   object = mycon
 
-
-cursor = mycon.cursor()                                                                   #cursor setup           cursor = cursor
+#cursor setup
+cursor = mycon.cursor()            
 
 #database checkup
 try:
@@ -56,6 +59,7 @@ for i in range(len(columns)):
     if i == position:
         description += ' primary key '
 table  = "create table " + table_name + '(' +description+ ')'
+print(table)
 cursor.execute(table)
 mycon.commit()
 
@@ -64,19 +68,19 @@ n = (len(df.index))
 command = "insert into " + table_name + ' values('
 
 for i in column_types:
-    if i == 'datetime':
+    if i == 'datetime' or i== 'char(20)':
         command = command + "'{}',"
     else:
         command = command + "{},"
 command = command[0:-1] + ')'
-print(command.format('2022-05-27 00:00:00', 54671.5, 54936.63, 54449.34, 54884.66)) 
+print(command) 
 
 for i in range(n):
     entry_list = list(df.iloc[i,:])
     for j in column_types:
         if j == 'datetime':
             pos = column_types.index(j)
-    entry_list[pos] = str(entry_list[pos])
+            entry_list[pos] = str(entry_list[pos])
     entry_tuple = tuple(entry_list)
     cursor.execute(command.format(*entry_tuple))
 
