@@ -2,54 +2,55 @@ import numpy as np
 import pandas as pd
 import mysql.connector as sqlator
 
+
 def refine(arg):
-    Mysql_types = ['datetime','float','integer','char(20)']
-    panda_types = ['time','float','int','str']
+    Mysql_types = ['datetime', 'float', 'integer', 'char(20)']
+    panda_types = ['time', 'float', 'int', 'str']
     for i in range(len(Mysql_types)):
-        print ( 'Type:', arg)
-        if (str(panda_types[i]) in str(arg)):
-            return (Mysql_types[i])
+        print('Type:', arg)
+        if str(panda_types[i]) in str(arg):
+            return Mysql_types[i]
 
 
-#panda is loading the file
+# panda is loading the file
 file_name = input('Enter file name: ')
 df = pd.read_excel(file_name)
 
-#loading
+# loading
 table_name = input("Enter the table's name you want to create: ")
-database_name = input ("Enter database name: ")
+database_name = input("Enter database name: ")
 
 # extraction of primary key & columns
 columns = list(df.columns)
 print(columns)
-position= int(input('Enter the positon of the column to be taken as a primary key:'))
-print(columns[position],'is the primary key')
+position = int(input('Enter the position of the column to be taken as a primary key:'))
+print(columns[position], 'is the primary key')
 primary_key = columns[position]
 
-#extraction of datatypes of columns
+# extraction of datatypes of columns
 column_types = []
 for i in columns:
-    column = (df.loc[0,i])
+    column = (df.loc[0, i])
     panda_type = [str(type(column))]
     mysql_type = refine(panda_type)
-    column_types+= [mysql_type]
-print(column_types,'are the datatypes of columns')
+    column_types += [mysql_type]
+print(column_types, 'are the datatypes of columns')
 
-#mysql_connector
+# mysql_connector
 mycon = sqlator.connect(host='localhost', user='root', passwd='Plank#6.626', database='business')
 if mycon.is_connected():
-    print('connected')                   # basic connection   object = mycon
+    print('connected')  # basic connection   object = mycon
 
-#cursor setup
-cursor = mycon.cursor()            
+# cursor setup
+cursor = mycon.cursor()
 
-#database checkup
+# database checkup
 try:
-    cursor.execute('use '+database_name)
+    cursor.execute('use ' + database_name)
 except:
-    cursor.execute('create database '+database_name)
+    cursor.execute('create database ' + database_name)
 
-#creation of table
+# creation of table
 description = ' '
 for i in range(len(columns)):
     if i > 0:
@@ -58,25 +59,25 @@ for i in range(len(columns)):
     description += column_types[i] + ' '
     if i == position:
         description += ' primary key '
-table  = "create table " + table_name + '(' +description+ ')'
+table = "create table " + table_name + '(' + description + ')'
 print(table)
 cursor.execute(table)
 mycon.commit()
 
-#Entering data
+# Entering data
 n = (len(df.index))
 command = "insert into " + table_name + ' values('
 
 for i in column_types:
-    if i == 'datetime' or i== 'char(20)':
+    if i == 'datetime' or i == 'char(20)':
         command = command + "'{}',"
     else:
         command = command + "{},"
 command = command[0:-1] + ')'
-print(command) 
+print(command)
 
 for i in range(n):
-    entry_list = list(df.iloc[i,:])
+    entry_list = list(df.iloc[i, :])
     for j in column_types:
         if j == 'datetime':
             pos = column_types.index(j)
