@@ -82,7 +82,6 @@ for i in range(n):
         if j == 'datetime':
             pos = column_types.index(j)
             entry_list[pos] = str(entry_list[pos])
-    entry_tuple = tuple(entry_list)
-    cursor.execute(command.format(*entry_tuple))
+    cursor.execute(command.format(*entry_list))
 
 mycon.commit()
