@@ -68,6 +68,7 @@ mycon.commit()
 n = (len(df.index))
 command = "insert into " + table_name + ' values('
 
+# The argument for entering data in the table is being constructed in order to adjust for how many variables are in the dataset and their datatypes.
 for i in column_types:
     if i == 'datetime' or i == 'char(20)':
         command = command + "'{}',"
